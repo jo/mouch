@@ -23,14 +23,14 @@ Every Mouch project has a `app.json.erb` file. This file bundles all documents.
 
 The simplest `app.json.erb` I could imagine is:
 
-  {
-    "docs": [
-      {
-        "_id": "readme",
-        "text": <%=h read 'README.md' %>
-      }
-    ]
-  }
+    {
+      "docs": [
+        {
+          "_id": "readme",
+          "text": <%=h read 'README.md' %>
+        }
+      ]
+    }
 
 As you see this is simply CouchDBs bulk\_doc api.
 
@@ -49,78 +49,78 @@ A nice way to have each document seperated, as shown in this a little more compl
 
 ### `app.json.erb`
 
-  {
-    "docs": [
-      <%= read 'hello-world/app.json.erb' %>
-    ]
-  }
+    {
+      "docs": [
+        <%= read 'hello-world/app.json.erb' %>
+      ]
+    }
 
 
 ### `hello-world/app.json.erb`
 
-  {
-    "_id": "_design/hello-world",
-  
-    "filters": <%= map 'filters' %>,
-    "lists": <%= map 'lists' %>,
-    "rewrites": <%= read 'rewrites.json' %>,
-    "shows": <%= map 'shows' %>,
-    "updates": <%= map 'updates' %>,
-    "views": <%= map 'views' %>,
-  
-    "_attachments": {
-      "favicon.ico": {
-        "content_type": "image/x-icon; charset=utf-8",
-        "data": <%=h base64 read 'favicon.ico' %>
-      },
-      "app.js": {
-        "content_type": "application/javascript; charset=utf-8",
-        "data": <%=h base64 read 'app/app.js.erb' %>
-      },
-      "app.css": {
-        "content_type": "text/css; charset=utf-8",
-        "data": <%=h base64 read ['../lib/style/*.css', 'style/*.css'] %>
-      },
-      "index.html": {
-        "content_type": "text/html; charset=utf-8",
-        "data": <%=h base64 read 'index.html.erb' %>
+    {
+      "_id": "_design/hello-world",
+    
+      "filters": <%= map 'filters' %>,
+      "lists": <%= map 'lists' %>,
+      "rewrites": <%= read 'rewrites.json' %>,
+      "shows": <%= map 'shows' %>,
+      "updates": <%= map 'updates' %>,
+      "views": <%= map 'views' %>,
+    
+      "_attachments": {
+        "favicon.ico": {
+          "content_type": "image/x-icon; charset=utf-8",
+          "data": <%=h base64 read 'favicon.ico' %>
+        },
+        "app.js": {
+          "content_type": "application/javascript; charset=utf-8",
+          "data": <%=h base64 read 'app/app.js.erb' %>
+        },
+        "app.css": {
+          "content_type": "text/css; charset=utf-8",
+          "data": <%=h base64 read ['../lib/style/*.css', 'style/*.css'] %>
+        },
+        "index.html": {
+          "content_type": "text/html; charset=utf-8",
+          "data": <%=h base64 read 'index.html.erb' %>
+        }
       }
     }
-  }
 
 
 ### Example Directory Structure
 
 Having a directory structure like this:
 
-  hello-world
-  ├── app.json.erb
-  ├── build
-  ├── lib
-  │   └── style
-  │       └── app.css
-  ├── makefile
-  ├── hello-world
-  │   ├── app.json.erb
-  │   ├── favicon.ico
-  │   ├── filters
-  │   │   └── docs.js
-  │   ├── index.html.erb
-  │   ├── lists
-  │   │   └── table.js
-  │   ├── rewrites.json
-  │   ├── shows
-  │   │   └── doc.js
-  │   ├── style
-  │   │   └── app.css
-  │   ├── updates
-  │   │   └── doc.js
-  │   └── views
-  │       └── docs
-  │           ├── map.js
-  │           └── reduce.js
-  ├── push
-  └── README.md
+    .
+    ├── app.json.erb
+    ├── build
+    ├── lib
+    │   └── style
+    │       └── app.css
+    ├── makefile
+    ├── hello-world
+    │   ├── app.json.erb
+    │   ├── favicon.ico
+    │   ├── filters
+    │   │   └── docs.js
+    │   ├── index.html.erb
+    │   ├── lists
+    │   │   └── table.js
+    │   ├── rewrites.json
+    │   ├── shows
+    │   │   └── doc.js
+    │   ├── style
+    │   │   └── app.css
+    │   ├── updates
+    │   │   └── doc.js
+    │   └── views
+    │       └── docs
+    │           ├── map.js
+    │           └── reduce.js
+    ├── push
+    └── README.md
 
 
 Make
@@ -128,22 +128,22 @@ Make
 
 The `app.json` file is build with
 
-  make
+    make
 
 
 Create a database
 
-  make setup URL=http://localhost:5984/hello-world
+    make setup URL=http://localhost:5984/hello-world
 
 
 You can push it to the server
 
-  make install URL=http://localhost:5984/hello-world
+    make install URL=http://localhost:5984/hello-world
 
 
 To build from scatch, one can do
 
-  make all URL=http://localhost:5984/hello-world
+    make all URL=http://localhost:5984/hello-world
 
 
 
