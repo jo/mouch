@@ -1,0 +1,74 @@
+#!/usr/bin/env ruby
+# Mouch - couch app purism
+# (c) 2011 Johannes J. Schmidt, TF
+#
+# This command pushes the application, described via APP file or commandline stream
+# to the database specified via URL parameter.
+# 
+# Usage:
+#   ./push APP URL [URL1,URL2...]
+require 'tempfile'
+require 'json'
+require 'digest/sha1'
+
+urls = []
+
+# remove all urls from arguments
+while ARGV.length > 1
+  urls << ARGV.pop
+end
+
+# get app from commandline
+APP = JSON.parse ARGF.read
+APP.freeze
+
+# last pushed version
+push_state_filename = File.join(File.dirname(__FILE__), '.mouch-push-state')
+@shas = File.file?(push_state_filename) ? Marshal.load(File.read(push_state_filename)) : {}
+
+def push url
+  @shas[url] ||= {}
+
+  app = APP.dup
+
+  # get revs via bulk docs API
+  current = JSON.parse `curl --insecure -s -XPOST #{url}/_all_docs -H 'Content-Type:application/json' -d'{"keys": #{app['docs'].map { |d| d['_id'] }.to_json}}'`
+
+  current['rows'].each do |row|
+    doc = app['docs'].find { |d| d['_id'] == row['id'] }
+    doc['_rev'] = row['value']['rev']
+  end
+
+  app['docs'].delete_if { |doc| @shas[url][doc['_id']] == Digest::SHA1.hexdigest(doc.to_s) }
+
+  if app['docs'].empty?
+    STDERR.puts '* %s: nothing to push' % url
+  else
+    STDERR.puts '* %s: %s' % [url, app['docs'].map { |d| d['_id'] }.join(', ')]
+
+    # push app
+    file = Tempfile.new('app.json')
+    begin
+      file << app.to_json
+      file.rewind
+      # via buld docs API
+      now = JSON.parse(`curl --insecure -s -XPOST #{url}/_bulk_docs -d@'#{file.path}' -H 'Content-Type: application/json'`)
+
+      # store sha
+      now.each do |row|
+        doc = app['docs'].find { |d| d['_id'] == row['id'] }
+        doc['_rev'] = row['rev']
+
+        @shas[url][row['id']] = Digest::SHA1.hexdigest(doc.to_s)
+      end
+    ensure
+      file.close!
+    end
+  end
+end
+
+urls.each do |url|
+  push url
+end
+
+File.open(push_state_filename, 'w') {|f| f.write(Marshal.dump(@shas)) }
