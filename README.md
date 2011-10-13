@@ -36,10 +36,46 @@ As you see this is simply CouchDBs bulk\_doc api.
 
 The `build` script provides routines for
 
-* read files (`read`) and render `.erb` templates
 * escape text (`h`)
-* map directory structure to objects (`map`)
 * base64 encode content (`base64`)
+* read files (`read`) and render `.erb` templates
+* map directory structure to objects (`map`)
+
+
+### h
+
+escape strings
+
+
+### base64
+
+encode strings base64. Used to insert attachments like images & css.
+
+
+### read patterns
+
+you can `read` one file:
+
+    <%=h read 'README.md' %>
+
+or `read` all files matching patterns concats them:
+
+    <%=h read '*.js' %>
+
+To have more control over the position you can supply arrays:
+
+    <%=h read ['lib/*.js', 'app/*.js'] %>
+
+Templates are getting build:
+
+    <%=h read 'app.json.erb' %>
+
+
+### map
+
+maps a directory structure into a JSON object.
+Strips extnames from filenames for the key.
+
 
 
 Example
@@ -91,7 +127,8 @@ A nice way to have each document seperated, as shown in this a little more compl
 
 ### Example Directory Structure
 
-Having a directory structure like this:
+You can have whatever directory layout you want.
+One of my projects has a directory structure like this:
 
     .
     ├── app.json.erb
@@ -123,29 +160,6 @@ Having a directory structure like this:
     └── README.md
 
 
-Make
-----
-
-The `app.json` file is build with
-
-    make
-
-
-Create a database
-
-    make create URL=http://localhost:5984/hello-world
-
-
-You can push it to the server
-
-    make install URL=http://localhost:5984/hello-world
-
-
-To build from scatch, one can do
-
-    make all URL=http://localhost:5984/hello-world
-
-
 
 Installation
 ------------
@@ -163,6 +177,61 @@ Mouch build and push scripts are plain Ruby. No rubygems. (They are so slow)
 I would love to see the ruby json requirement going away. Any help appreciated.
 
 
-I would love to hear your opinions. Please get in touch with me.
+### Getting a Couch
+
+You can install CouchDB via your package manager or manually.
+The easyiest way is to setup a free account on
+https://cloudant.com/ or http://www.iriscouch.com/
+
+You can use urls with authentication information like
+  
+    https://username:password@username.cloudant.com/dbname
+
+
+### Getting Mouch
+
+    jo@TF:~$ git clone git://github.com/jo/mouch.git
+
+### Setup a Project
+
+    jo@TF:~$ cd mouch
+    jo@TF:~/mouch$ mkdir projects/hello-world -p
+    jo@TF:~/mouch$ make setup DIR=projects/hello-world
+    cp build projects/hello-world
+    cp push projects/hello-world
+    cp makefile projects/hello-world
+    cp README.md projects/hello-world
+    cp app.json.erb projects/hello-world
+
+
+Build Process
+-------------
+
+The project `app.json` file is build with
+
+    jo@TF:~/mouch/projects/hello-world$ make
+
+
+Create a database
+
+    jo@TF:~/mouch/projects/hello-world$ make create URL=http://localhost:5984/hello-world
+
+
+Push the application to the server
+
+    jo@TF:~/mouch/projects/hello-world$ make install URL=http://localhost:5984/hello-world
+
+
+To build from scatch, one can do
+
+    jo@TF:~/mouch/projects/hello-world$ make all URL=http://localhost:5984/hello-world
+
+
+You
+---
+
+I would love to hear your opinions. Please discuss here: https://github.com/jo/mouch/issues.
+
+
 
 (c) Johannes J. Schmidt, 2011
