@@ -13,6 +13,7 @@ The makefile controls which parts of your application needs to be updated
 and triggers the commands `build` and `push`.
 
 You choose the framework you like - use jQuery, Backbone, Mustache - or not.
+Install them as Git submodules and include the files you need.
 
 
 Build Process
