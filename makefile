@@ -26,4 +26,11 @@ clean :
 # make all from scratch
 all : clean dep $(TARGET) install
 
+setup :
+	cp build $(DIR)
+	cp push $(DIR)
+	cp makefile $(DIR)
+	cp README.md $(DIR)
+	cp app.json.erb $(DIR)
+
 -include $(DEPENDFILE)
