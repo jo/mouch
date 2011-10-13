@@ -36,7 +36,7 @@ def push url
 
   current['rows'].each do |row|
     doc = app['docs'].find { |d| d['_id'] == row['id'] }
-    doc['_rev'] = row['value']['rev']
+    doc['_rev'] = row['value']['rev'] if doc
   end
 
   app['docs'].delete_if { |doc| @shas[url][doc['_id']] == Digest::SHA1.hexdigest(doc.to_s) }
