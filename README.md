@@ -93,7 +93,7 @@ A nice way to have each document seperated, as shown in this a little more compl
 
 Having a directory structure like this:
 
-  .
+  hello-world
   ├── app.json.erb
   ├── build
   ├── lib
