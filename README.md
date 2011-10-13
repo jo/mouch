@@ -133,7 +133,7 @@ The `app.json` file is build with
 
 Create a database
 
-    make setup URL=http://localhost:5984/hello-world
+    make create URL=http://localhost:5984/hello-world
 
 
 You can push it to the server

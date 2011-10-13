@@ -11,7 +11,7 @@ dep:
 	echo '$(TARGET) :' `./build $(SRC) --deps` > $(DEPENDFILE)
 
 # create database
-setup :
+create :
 	curl -XPUT $(URL)
 
 # install app
