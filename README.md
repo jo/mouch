@@ -4,13 +4,15 @@ Mouch
 With Mouch and CouchDB you can build powerful web applications
 without the need of other software components.
 
-Mouch is for people who love purism. For people who keep control over
-every single byte. For people who love things speeding fast.
+Mouch is for people who love purism. For people who keep complete control over
+their bytes. For people who love things speeding fast.
 
-Mouch consist of only three files, with together 200 lines.
+Mouch consist of only three files, with together 125 lines of code.
 Your interface is GNU Make.
 The makefile controls which parts of your application needs to be updated
 and triggers the commands `build` and `push`.
+
+You choose the framework you like - use jQuery, Backbone, Mustache - or not.
 
 
 Build Process
