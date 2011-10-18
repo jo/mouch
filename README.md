@@ -81,6 +81,70 @@ maps a directory structure into a JSON object.
 Strips extnames from filenames for the key.
 
 
+Installation
+------------
+
+Mouch lives inside your project. You can install it as a git submodule or copy the three plain files around.
+
+Mouch has a few prerequisites:
+
+* make
+* ruby
+* ruby-json
+* curl
+
+Mouch build and push scripts are plain Ruby. No rubygems. (They are so slow)
+I would love to see the ruby json requirement going away. Any help appreciated.
+
+
+### Getting a Couch
+
+You can install CouchDB via your package manager or manually.
+The easyiest way is to setup a free account on
+https://cloudant.com/ or http://www.iriscouch.com/
+
+You can use urls with authentication information like
+  
+    https://username:password@username.cloudant.com/dbname
+
+
+### Getting Mouch
+
+    jo@TF:~$ git clone git://github.com/jo/mouch.git
+
+### Setup a Project
+
+Simply copy the files into you project:
+
+    jo@TF:~$ mkdir hello-world -p
+    cp mouch/build hello-world/
+    cp mouch/push hello-world/
+    cp mouch/makefile hello-world/
+    cp mouch/app.json.erb hello-world/
+
+Now start with editing `app.json.erb`.
+
+Build Process
+-------------
+
+The project `app.json` file is build with
+
+    jo@TF:~/mouch/projects/hello-world$ make
+
+
+Create a database
+
+    jo@TF:~/mouch/projects/hello-world$ make create URL=http://localhost:5984/hello-world
+
+
+Push the application to the server
+
+    jo@TF:~/mouch/projects/hello-world$ make install URL=http://localhost:5984/hello-world
+
+
+To build from scatch, one can do
+
+    jo@TF:~/mouch/projects/hello-world$ make all URL=http://localhost:5984/hello-world
 
 Example
 -------
@@ -165,76 +229,18 @@ One of my projects has a directory structure like this:
 
 
 
-Installation
-------------
-
-Mouch lives inside your project. You can install it as a git submodule or copy the three plain files around.
-
-Mouch has a few prerequisites:
-
-* make
-* ruby
-* ruby-json
-* curl
-
-Mouch build and push scripts are plain Ruby. No rubygems. (They are so slow)
-I would love to see the ruby json requirement going away. Any help appreciated.
-
-
-### Getting a Couch
-
-You can install CouchDB via your package manager or manually.
-The easyiest way is to setup a free account on
-https://cloudant.com/ or http://www.iriscouch.com/
-
-You can use urls with authentication information like
-  
-    https://username:password@username.cloudant.com/dbname
-
-
-### Getting Mouch
-
-    jo@TF:~$ git clone git://github.com/jo/mouch.git
-
-### Setup a Project
-
-Simply copy the files into you project:
-
-    jo@TF:~$ mkdir hello-world -p
-    cp mouch/build hello-world/
-    cp mouch/push hello-world/
-    cp mouch/makefile hello-world/
-    cp mouch/app.json.erb hello-world/
-
-Now start with editing `app.json.erb`.
-
-Build Process
--------------
-
-The project `app.json` file is build with
-
-    jo@TF:~/mouch/projects/hello-world$ make
-
-
-Create a database
-
-    jo@TF:~/mouch/projects/hello-world$ make create URL=http://localhost:5984/hello-world
-
-
-Push the application to the server
-
-    jo@TF:~/mouch/projects/hello-world$ make install URL=http://localhost:5984/hello-world
-
-
-To build from scatch, one can do
-
-    jo@TF:~/mouch/projects/hello-world$ make all URL=http://localhost:5984/hello-world
-
 
 You
 ---
 
 I would love to hear your opinions. Please discuss here: https://github.com/jo/mouch/issues.
+
+
+License
+-------
+
+MIT: http://tf.mit-license.org
+
 
 
 
