@@ -197,15 +197,15 @@ You can use urls with authentication information like
 
 ### Setup a Project
 
-    jo@TF:~$ cd mouch
-    jo@TF:~/mouch$ mkdir projects/hello-world -p
-    jo@TF:~/mouch$ make setup DIR=projects/hello-world
-    cp build projects/hello-world
-    cp push projects/hello-world
-    cp makefile projects/hello-world
-    cp README.md projects/hello-world
-    cp app.json.erb projects/hello-world
+Simply copy the files into you project:
 
+    jo@TF:~$ mkdir hello-world -p
+    cp mouch/build hello-world/
+    cp mouch/push hello-world/
+    cp mouch/makefile hello-world/
+    cp mouch/app.json.erb hello-world/
+
+Now start with editing `app.json.erb`.
 
 Build Process
 -------------
