@@ -5,7 +5,8 @@ With Mouch and CouchDB you can build powerful web applications
 without the need of other software components.
 
 Mouch is for people who love purism. For people who keep complete control over
-their bytes. For people who love things speeding fast.
+their bytes.
+For people who love things speeding fast, keeping dependencies as minimal as possible.
 
 Mouch consist of only three files, with together 125 lines of code.
 Your interface is GNU Make.
