@@ -13,7 +13,6 @@
 #   echo '{ <%=h read ["**/*.css", "**/*.js", "**/*.html"] %> }' | ./build --deps
 #
 require 'erb'
-require 'tempfile'
 
 PRINT_DEPS = ARGV.delete('--deps')
 
@@ -26,6 +25,18 @@ end
 # encode base64
 def base64 content
   [content].pack("m").gsub(/\s+/,'')
+end
+
+# convert images using ImageMagick
+def convert patterns, format = 'png', options = nil
+  Dir[*patterns].uniq.map do |f|
+    filename = File.join(Dir.pwd, f)
+
+    @files ||= []; @files << filename
+    STDERR.puts filename
+
+    `convert #{filename} #{options} #{format}:-`
+  end.join("\n")
 end
 
 # read files
@@ -46,7 +57,7 @@ def read patterns
     else
       File.read filename
     end
-  end.join("\n").strip
+  end.join("\n")
 end
 
 
@@ -83,7 +94,7 @@ if PRINT_DEPS
   else
     ERB.new(ARGF.read).result(binding)
   end
-  puts @files.join(' ') if @files
+  puts @files.uniq.join(' ') if @files
 else
   if File.file?(ARGF.filename)
     puts read ARGF.filename

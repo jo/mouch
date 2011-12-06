@@ -42,43 +42,102 @@ The `build` script provides routines for
 
 * escape text (`h`)
 * base64 encode content (`base64`)
+* convert images (`convert`)
 * read files (`read`) and render `.erb` templates
 * map directory structure to objects (`map`)
 
 
-### h
+### h `content`
 
-escape strings
+escape `content` string.
+
+#### Example
+
+    h '<script>var title = "This is Mouch";</script>'
+
+will produce
+
+    "<script>var title = \"This is Mouch\";<\/script>"
 
 
-### base64
+### base64 `content`
 
-encode strings base64. Used to insert attachments like images & css.
+encode `content` strings base64. Used to insert attachments like images & css.
+
+### Example
+
+    base64 'My name is Mouch!'
+
+results in
+
+    TXkgbmFtZSBpcyBNb3VjaCE=
 
 
-### read patterns
+### convert `patterns`, [`format`, `options`]
 
-you can `read` one file:
+`convert` images using ImageMagicks `convert` program.
+The default is to convert the image to png. Specify `format` to any format sting ImageMagick understands.
+You may want to specify other `options`, which are passed to ImageMagick.
 
-    <%=h read 'README.md' %>
+#### Example:
+
+    convert 'icon.svg', 'ico', '-resize 16x16 -transparent white'
+
+will generate a .ico file and scale it to 16x16 px.
+
+Visit the ImageMagick documentation: http://www.imagemagick.org/script/index.php
+
+
+### read `patterns`
+
+Read files from filesystem. `patterns` are passed to Ruby `Dir.glob`.
+
+#### Examples
+
+`read` one file:
+
+    read 'README.md'
 
 or `read` all files matching patterns concats them:
 
-    <%=h read '*.js' %>
+    read '*.js'
 
-To have more control over the position you can supply arrays:
+To have more control over the order you can supply arrays:
 
-    <%=h read ['lib/*.js', 'app/*.js'] %>
+    read ['lib/*.js', 'app/*.js']
 
 Templates are getting build:
 
-    <%=h read 'app.json.erb' %>
+    read 'app.json.erb'
 
 
-### map
+Read the Ruby `Dir.glob` documentation: http://www.ruby-doc.org/core-1.9.3/Dir.html#method-c-glob
 
-maps a directory structure into a JSON object.
+
+### map `dirname`
+
+Maps the directory `dirname` into into a JSON object.
 Strips extnames from filenames for the key.
+
+#### Example
+
+    map 'views'
+
+will transform the the directory
+
+    views
+    └── docs
+        ├── map.js
+        └── reduce.js
+
+into the JSON object
+
+    {
+      "docs": {
+        "map": "content of map.js"
+        "reduce": "content of reduce.js"
+      }
+    }
 
 
 Installation
@@ -92,6 +151,7 @@ Mouch has a few prerequisites:
 * ruby
 * ruby-json
 * curl
+* imagemagick (only needed if you use the convert command)
 
 Mouch build and push scripts are plain Ruby. No rubygems. (They are so slow)
 I would love to see the ruby json requirement going away. Any help appreciated.
@@ -112,44 +172,39 @@ You can use urls with authentication information like
 
     jo@TF:~$ git clone git://github.com/jo/mouch.git
 
+
 ### Setup a Project
 
 Simply copy the files into you project:
 
-    jo@TF:~$ mkdir hello-world -p
-    cp mouch/build hello-world/
-    cp mouch/push hello-world/
-    cp mouch/makefile hello-world/
-    cp mouch/app.json.erb hello-world/
+    jo@TF:~$ cp -r mouch hello-world
 
 Now start with editing `app.json.erb`.
+
 
 Build Process
 -------------
 
 The project `app.json` file is build with
 
-    jo@TF:~/mouch/projects/hello-world$ make
+    jo@TF:~/hello-world$ make
 
 
 Create a database
 
-    jo@TF:~/mouch/projects/hello-world$ make create URL=http://localhost:5984/hello-world
+    jo@TF:~/hello-world$ make create URL=http://localhost:5984/hello-world
 
 
-Push the application to the server
+Build the application and push to the server
 
-    jo@TF:~/mouch/projects/hello-world$ make install URL=http://localhost:5984/hello-world
+    jo@TF:~/hello-world$ make URL=http://localhost:5984/hello-world
 
-
-To build from scatch, one can do
-
-    jo@TF:~/mouch/projects/hello-world$ make all URL=http://localhost:5984/hello-world
 
 Example
 -------
 
-A nice way to have each document seperated, as shown in this a little more complex example:
+A nice way to have each document seperated, as shown in this example:
+
 
 ### `app.json.erb`
 
@@ -175,7 +230,7 @@ A nice way to have each document seperated, as shown in this a little more compl
       "_attachments": {
         "favicon.ico": {
           "content_type": "image/x-icon; charset=utf-8",
-          "data": <%=h base64 read 'favicon.ico' %>
+          "data": <%=h base64 convert 'icon.svg', 'ico', '-resize 16x16 -transparent white' %>
         },
         "app.js": {
           "content_type": "application/javascript; charset=utf-8",
@@ -207,10 +262,10 @@ One of my projects has a directory structure like this:
     ├── makefile
     ├── hello-world
     │   ├── app.json.erb
-    │   ├── favicon.ico
     │   ├── filters
     │   │   └── docs.js
     │   ├── index.html.erb
+    │   ├── icon.svg
     │   ├── lists
     │   │   └── table.js
     │   ├── rewrites.json
