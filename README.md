@@ -8,7 +8,7 @@ Mouch is for people who love purism. For people who keep complete control over
 their bytes.
 For people who love things speeding fast, keeping dependencies as minimal as possible.
 
-Mouch consist of only three files, with together 125 lines of code.
+Mouch consist of only three files, with together 131 lines of code.
 Your interface is GNU Make.
 The makefile controls which parts of your application needs to be updated
 and triggers the commands `build` and `push`.
