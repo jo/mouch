@@ -1,29 +1,31 @@
-SRC = app.json.erb
+SOURCE = app.json.erb
 TARGET = app.json
 DEPENDFILE = .dependencies
 
-# build app
-$(TARGET) : $(SRC)
-	./build $(SRC) > $(TARGET)
+# install
+install : $(TARGET)
+	./push $(TARGET) $(URL)
 
-# create dependency file
+
+# build
+$(TARGET) : $(SOURCE)
+	./build $(SOURCE) > $(TARGET)
+
+
+# create dependency
 dep: 
-	echo '$(TARGET) :' `./build $(SRC) --deps` > $(DEPENDFILE)
+	echo '$(TARGET) :' `./build $(SOURCE) --deps` > $(DEPENDFILE)
+
 
 # create database
 create :
 	curl -XPUT $(URL)
 
-# install app
-install : $(TARGET)
-	./push $(TARGET) $(URL)
 
 # clean build files
 clean : 
 	rm -rf $(DEPENDFILE)
 	rm -rf $(TARGET)
 
-# make all from scratch
-all : clean dep $(TARGET) install
 
 -include $(DEPENDFILE)
