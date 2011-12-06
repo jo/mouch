@@ -15,7 +15,7 @@ urls = []
 
 # remove all urls from arguments
 while ARGV.length > 1
-  urls << ARGV.pop
+  urls << ARGV.pop.sub(/\/$/, '')
 end
 
 # get app from commandline
@@ -34,9 +34,11 @@ def push url
   # get revs via bulk docs API
   current = JSON.parse `curl --insecure -s -XPOST #{url}/_all_docs -H 'Content-Type:application/json' -d'{"keys": #{app['docs'].map { |d| d['_id'] }.to_json}}'`
 
-  current['rows'].each do |row|
-    doc = app['docs'].find { |d| d['_id'] == row['id'] }
-    doc['_rev'] = row['value']['rev'] if doc
+  if current['rows']
+    current['rows'].each do |row|
+      doc = app['docs'].find { |d| d['_id'] == row['id'] }
+      doc['_rev'] = row['value']['rev'] if doc
+    end
   end
 
   app['docs'].delete_if { |doc| @shas[url][doc['_id']] == Digest::SHA1.hexdigest(doc.to_s) }
