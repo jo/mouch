@@ -25,7 +25,7 @@ This JSON document can be deployed to a server via the `push` command.
 
 Every Mouch project has a `app.json.erb` file. This file bundles all documents.
 
-The simplest `app.json.erb` I could imagine is:
+The simplest `app.json.erb` I can imagine is:
 
     {
       "docs": [
@@ -36,15 +36,16 @@ The simplest `app.json.erb` I could imagine is:
       ]
     }
 
-As you see this is simply CouchDBs bulk\_doc api.
+As you see this is simply CouchDBs `bulk\_docs` api: http://wiki.apache.org/couchdb/HTTP_Bulk_Document\_API
+
 
 The `build` script provides routines for
 
-* escape text (`h`)
-* base64 encode content (`base64`)
-* convert images (`convert`)
-* read files (`read`) and render `.erb` templates
-* map directory structure to objects (`map`)
+* escaping
+* base64 encoding
+* converting images
+* reading files and render `.erb` templates
+* mapping directories to JSON objects
 
 
 ### h `content`
@@ -151,7 +152,7 @@ Mouch has a few prerequisites:
 * ruby
 * ruby-json
 * curl
-* imagemagick (only needed if you use the convert command)
+* imagemagick _(only needed if you make use of the `convert` command)_
 
 Mouch build and push scripts are plain Ruby. No rubygems. (They are so slow)
 I would love to see the ruby json requirement going away. Any help appreciated.
