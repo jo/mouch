@@ -9,7 +9,8 @@
 #   ./push APP URL [URL1,URL2...]
 require 'tempfile'
 require 'json'
-require 'digest/sha1'
+
+BATCH_SIZE = 100
 
 urls = []
 
@@ -22,55 +23,116 @@ end
 APP = JSON.parse ARGF.read
 APP.freeze
 
-# last pushed version
-push_state_filename = File.join(File.dirname(__FILE__), '.mouch-push-state')
-@shas = File.file?(push_state_filename) ? Marshal.load(File.read(push_state_filename)) : {}
+def display_response response
+  response.each do |key, value|
+    STDERR.puts '  %s: %s' % [key, value]
+  end
+end
+
+def spinner number, total
+  if total < 10
+    STDERR.print "%d %s pushed" % [number, number === 1 ? 'doc' : 'docs']
+    return
+  end
+  STDERR.print "\r"
+  STDERR.print "%.2f%% (%d/%d)" % [number*100.0/total, number, total]
+end
 
 def push url
-  @shas[url] ||= {}
+  # check database / server
+  info = `curl --insecure -s -XGET #{url} -H 'Content-Type:application/json'`
+  begin
+    info = JSON.parse info
+  rescue JSON::ParserError
+    STDERR.puts "Error: Can't connect to CouchDB server"
+    exit
+  end
+  if info["error"]
+    STDERR.puts "Error: Can't connect to database"
+    display_response info
+    exit
+  end
+
+  STDERR.puts '* pushing %s' % url
 
   app = APP.dup
 
-  # get revs via bulk docs API
-  current = JSON.parse `curl --insecure -s -XPOST #{url}/_all_docs -H 'Content-Type:application/json' -d'{"keys": #{app['docs'].map { |d| d['_id'] }.to_json}}'`
+  cnt = 0
+  total = app['docs'].length
+  # push app in batches
+  app['docs'].each_slice(BATCH_SIZE) do |apps|
+    docs = {}
+    apps.each { |doc| docs[doc['_id']] = doc }
 
-  if current['rows']
-    current['rows'].each do |row|
-      doc = app['docs'].find { |d| d['_id'] == row['id'] }
-      doc['_rev'] = row['value']['rev'] if doc
+    # get revs
+    file = Tempfile.new('ids.json')
+    current = {}
+    keys = apps.map { |d| d['_id'] }.compact
+
+    if keys.length > 0
+      begin
+        file << { "keys" => keys }.to_json
+        file.rewind
+        current = `curl --insecure -s -XPOST #{url}/_all_docs -H 'Content-Type:application/json' -d@'#{file.path}'`
+        begin
+          current = JSON.parse current
+        rescue JSON::ParserError
+          STDERR.puts "Error: Can't connect to CouchDB server"
+          exit
+        end
+
+        # check response
+        if current["error"]
+          STDERR.puts "Error: Failed to fetch revisions"
+          display_response current
+          exit
+        end
+      ensure
+        file.close
+      end
+
+      # parse response
+      if current['rows']
+        current['rows'].each do |row|
+          doc = docs[row['id']]
+          doc['_rev'] = row['value']['rev'] if doc
+        end
+      end
     end
-  end
-
-  app['docs'].delete_if { |doc| @shas[url][doc['_id']] == Digest::SHA1.hexdigest(doc.to_s) }
-
-  if app['docs'].empty?
-    STDERR.puts '* %s: nothing to push' % url
-  else
-    STDERR.puts '* %s: %s' % [url, app['docs'].map { |d| d['_id'] }.join(', ')]
 
     # push app
     file = Tempfile.new('app.json')
     begin
-      file << app.to_json
+      file << { "docs" => apps }.to_json
       file.rewind
-      # via buld docs API
-      now = JSON.parse(`curl --insecure -s -XPOST #{url}/_bulk_docs -d@'#{file.path}' -H 'Content-Type: application/json'`)
+      response = `curl --insecure -s -XPOST #{url}/_bulk_docs -d@'#{file.path}' -H 'Content-Type: application/json'`
 
-      # store sha
-      now.each do |row|
-        doc = app['docs'].find { |d| d['_id'] == row['id'] }
-        doc['_rev'] = row['rev']
+      begin
+        response = JSON.parse response
+      rescue JSON::ParserError
+        STDERR.puts "Error: Can't connect to CouchDB server"
+        exit
+      end
 
-        @shas[url][row['id']] = Digest::SHA1.hexdigest(doc.to_s)
+      # check response
+      response.each do |resp|
+        if resp["error"]
+          STDERR.puts "Error: Failed to push app " + resp["id"]
+          display_response resp
+          exit
+        end
       end
     ensure
       file.close!
     end
+
+    cnt += docs.length
+    spinner cnt, total
   end
+
+  STDERR.puts
 end
 
 urls.each do |url|
   push url
 end
-
-File.open(push_state_filename, 'w') {|f| f.write(Marshal.dump(@shas)) }
