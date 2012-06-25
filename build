@@ -75,7 +75,9 @@ def map dirname, indent = 2
     else
       out << ",\n"
     end
-    out << ' '*indent + '  "%s": ' % f.sub(/#{Regexp.escape File.extname(f)}$/, '')
+    key = f.sub(/\.erb$/, '')
+    key.sub!(/#{Regexp.escape File.extname(key)}$/, '')
+    out << ' '*indent + '  "%s": ' % key
     if File.directory?(file)
       out << map(file, indent + 2)
     else
@@ -94,7 +96,7 @@ if PRINT_DEPS
   else
     ERB.new(ARGF.read).result(binding)
   end
-  puts @files.uniq.join(' ') if @files
+  puts @files.uniq if @files
 else
   if File.file?(ARGF.filename)
     puts read ARGF.filename
