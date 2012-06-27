@@ -1,66 +1,353 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang=en>
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Mouch by jo</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <meta charset=utf-8>
+    <title>Mouch - Couchapp Purism</title>
+    <meta name=description content="With Mouch and CouchDB you can build powerful web applications.">
+    <meta name=author content="Johannes J. Schmidt, TF http://die-tf.de, Berlin">
+    <meta name=viewport content="width=device-width,user-scalable=no">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <style>
+      body {
+        background-color: white;
+        border: 1px solid #CACACA;
+        padding: 7%;
+        font: 16px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: #555;
+      }
+      a {
+        color: #39C;
+        text-decoration: none;
+      }
+      p, ul, ol, pre {
+        margin: 3ex 0;
+      }
+      h1, h2, h3, h4 {
+        color: #280b0b;
+        margin: 2ex 0 1ex;
+        padding: 0;
+        font-weight: bold;
+        -webkit-font-smoothing: antialiased;
+        cursor: text;
+        position: relative;
+      }
+      h1 {
+        font-size: 28px;
+        margin-top: 0;
+        font-family: Consolas,Menlo,"Liberation Mono",Courier,monospace;
+        min-height: 61.8px;
+      }
+      h1 + p {
+        min-height: 100px;
+        font-style: italic;
+        color: #280b0b;
+      }
+      h1 + p a,
+      h1 + p em {
+        font-weight: bold;
+      }
+      h2 {
+        font-size: 24px;
+        border-bottom: 1px solid #CCC;
+        margin-top: 6ex;
+        color: black;
+      }
+      h3 {
+        font-size: 18px;
+        margin-top: 3ex;
+      }
+      h4 {
+        font-size: 16px;
+      }
+      pre {
+        background-color: #F8F8F8;
+        border: 1px solid #CCC;
+        font-size: 13px;
+        line-height: 19px;
+        overflow: auto;
+        padding: 6px 10px;
+        border-radius: 3px;
+      }
+      pre, code {
+        font-size: 12px;
+        font-family: Consolas,Menlo,"Liberation Mono",Courier,monospace;
+      }
+      code {
+        margin: 0 2px;
+        padding: 0 5px;
+        white-space: nowrap;
+        border: 1px solid #EAEAEA;
+        background-color: #F8F8F8;
+        border-radius: 3px;
+      }
+      pre code {
+        background-color: transparent;
+        border: none;
+      }
+      pre > code {
+        margin: 0;
+        padding: 0;
+        white-space: pre;
+        border: none;
+        background: transparent;
+      }
+      ul, ol {
+        padding-left: 30px;
+      }
+      ol {
+        font-size: 18px;
+        line-height: 28px;
+        padding: 0 0 0 0.5em;
+        margin: 0 0 2ex 2em;
+        float: right;
+      }
+      ol li {
+        margin: 1ex 1em 0 1em;
+        color: #ccc;
+      }
+      ol li:first-child {
+        margin-top: 0;
+      }
+      .logo {
+        float: left;
+        margin: -4px 2em 1ex -6px;
+      }
+    </style>
   </head>
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Mouch</h1>
-        <p>Couchapp Purism</p>
-
-        <p class="view"><a href="https://github.com/jo/mouch">View the Project on GitHub <small>jo/mouch</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/jo/mouch/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/jo/mouch/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/jo/mouch">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h3>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+    <a href="http://jo.github.com/mouch/"><img class=logo src=logo.svg alt="Mouch Logo"></a>
+<h1>Mouch — Couchapp Purism</h1>
+<p>With <a href="http://jo.github.com/mouch">Mouch</a> and
+<a href="http://couchdb.apache.org/">CouchDB</a> you can build powerful
+<a href="http://couchapp.org/">Couchapps</a> using plain HTML, CSS and JavaScript.
+Mouch will <a href="#build">assemble</a> the project files and <a href="#push">deploy</a> the
+application.</p>
+<ol>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#docs">Docs</a></li>
+<li><a href="#license">License</a></li>
+</ol>
+<p>Mouch is a single <a href="https://raw.github.com/jo/mouch/master/mouch">Ruby script</a>,
+which you can check into your repository.
+That way everybody can instantly start working on the project without the need
+of installing anything.</p>
+<p>The <code>mouch</code> command compiles your project into one JSON, which can be deployed
+to a CouchDB server.</p>
+<p>The format of the JSON is the one CouchDB uses for the
+<a href="http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API">Bulk Document API</a>:</p>
+<pre><code>{
+  "docs": [
+    { "_id": "mydoc" },
+    { "_id": "otherdoc" }
+  ]
+}
 </code></pre>
+<p>A Mouch project typically has one <code>app.json.erb</code>
+<a href="http://ruby-doc.org/stdlib-1.9.3/libdoc/erb/rdoc/ERB.html">Ruby ERB</a> template,
+which bundles all documents:</p>
+<pre><code>{
+  "docs": [
+    &lt;%= read 'mydoc/app.json.erb' %&gt;,
+    &lt;%= read 'otherdoc/app.json.erb' %&gt;
+  ]
+}
+</code></pre>
+<p><a id=installation></a></p>
+<h2>Installation</h2>
+<p><a href="https://raw.github.com/jo/mouch/master/mouch">The mouch script</a>
+can live inside your project, copy it to <code>/usr/local/bin</code> or where you prefer.
+You can install it with <code>curl</code>:</p>
+<pre><code>curl https://raw.github.com/jo/mouch/master/mouch &gt; mouch
+chmod +x mouch
+</code></pre>
+<p>or with <code>git</code>:</p>
+<pre><code>git clone git://github.com/jo/mouch.git
+</code></pre>
+<h3>Prerequisites</h3>
+<ul>
+<li>ruby</li>
+<li>ruby-json</li>
+<li>curl</li>
+<li>imagemagick (optional)</li>
+</ul>
+<h3>How to Get a Couch</h3>
+<p>You can install CouchDB via your package manager
+or from <a href="http://couchdb.apache.org/">couchdb.apache.org</a>.
+The easyiest way is to setup a free account on
+<a href="https://cloudant.com/">Cloudant</a> or <a href="http://www.iriscouch.com/">Iris Couch</a>.</p>
+<h3>Running the Tests</h3>
+<p>Mouch has a very few tests, which you can run with</p>
+<pre><code>./mouch --test
+#=&gt;  # Running tests:
+#=&gt;  .....
+#=&gt;  Finished tests in 0.071161s, 70.2636 tests/s, 70.2636 assertions/s.
+#=&gt;  5 tests, 5 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
+<p><a id=usage></a></p>
+<h2>Usage</h2>
+<pre><code>./mouch [file] [urls] [options]
+--test  run test suite
+</code></pre>
+<h3>Authentication</h3>
+<p>Mouch allows passing the credentials in the URL:</p>
+<pre><code>http://username:password@localhost:5984/dbname
+</code></pre>
+<p><a id=build></a></p>
+<h3>Render Template</h3>
+<pre><code>./mouch [file]
+</code></pre>
+<p>When you omit the <code>file</code> argument, data is read from <code>STDIN</code>.</p>
+<pre><code>./mouch app.json.erb
+echo '{ "title": &lt;%=h base64 "Welcome" %&gt; }' | ./mouch
+#=&gt; { "title": "V2VsY29tZQ==" }
+</code></pre>
+<p><a id=push></a></p>
+<h3>Deploy to Server</h3>
+<pre><code>./mouch [file] urls
+</code></pre>
+<p>When Mouch detects urls as arguments, your app will be pushed immediately to
+all of these urls.</p>
+<p><em>Attention</em>: Mouch overwrites existing data.
+Mouch fetches the current revisions of the documents (if any) and pays no
+attention to conflicts.</p>
+<pre><code>./mouch app.json.erb http://localhost:5984/myapp
+#=&gt; * push http://localhost:5984/myapp
+#=&gt; 1 doc pushed
+</code></pre>
+<p><a id=docs></a></p>
+<h2>Docs: Build Functions</h2>
+<p>The ERB context provides you with a few methods for handling file content:</p>
+<ul>
+<li><a href="#h"><code>h</code></a> - Escape JSON values</li>
+<li><a href="#base64"><code>base64</code></a> - Encode content</li>
+<li><a href="#read"><code>read</code></a> - Read files and render .erb templates</li>
+<li><a href="#map"><code>map</code></a> - Map directories to JSON objects</li>
+<li><a href="#attachments"><code>attachments</code></a> - Generate _attachments entries</li>
+<li><a href="#convert"><code>convert</code></a> - Convert images using ImageMagick</li>
+</ul>
+<p><a id=h></a></p>
+<h3>h(content)</h3>
+<p>escape <code>content</code> string.</p>
+<h4>Example</h4>
+<pre><code>h '&lt;script&gt;var title = "This is Mouch";&lt;/script&gt;'
+</code></pre>
+<p>will produce</p>
+<pre><code>"&lt;script&gt;var title = \"This is Mouch\";&lt;\/script&gt;"
+</code></pre>
+<p><a id=base64></a></p>
+<h3>base64(content)</h3>
+<p>encode <code>content</code> strings base64.
+Used internally to encode attachments.
+This method is also useful to inline images in stylesheets.</p>
+<h4>Example</h4>
+<pre><code>base64 'My name is Mouch!'
+</code></pre>
+<p>results in</p>
+<pre><code>TXkgbmFtZSBpcyBNb3VjaCE=
+</code></pre>
+<p><a id=read></a></p>
+<h3>read(patterns)</h3>
+<p>Read files from filesystem. <code>patterns</code> are passed to
+<a href="http://www.ruby-doc.org/core-1.9.3/Dir.html#method-c-glob">Ruby <code>Dir.glob</code></a>.</p>
+<h4>Examples</h4>
+<p>Read one file:</p>
+<pre><code>read 'README.md'
+</code></pre>
+<p>or read all files matching patterns concats them:</p>
+<pre><code>read '\*.js'
+</code></pre>
+<p>To have more control over the order you can supply arrays:</p>
+<pre><code>read ['lib/*.js', 'app/*.js']
+</code></pre>
+<p>Templates are evaluated with build scope, so you can have nested templates:</p>
+<p>read 'app.json.erb'</p>
+<p>Read the
+<a href="http://www.ruby-doc.org/core-1.9.3/Dir.html#method-c-glob">Ruby Dir.glob documentation</a>.</p>
+<p><a id=map></a></p>
+<h3>map(dirname)</h3>
+<p>Maps the directory <code>dirname</code> into into a JSON object.
+Strips extnames from filenames for the key.</p>
+<h4>Example</h4>
+<pre><code>map 'views'
+</code></pre>
+<p>will transform the the directory</p>
+<pre><code>views
+└── docs
+    ├── map.js
+    └── reduce.js
+</code></pre>
+<p>into the JSON object</p>
+<pre><code>{
+  "docs": {
+    "map": "content of map.js"
+    "reduce": "content of reduce.js"
+  }
+}
+</code></pre>
+<p><a id=attachments></a></p>
+<h3>attachments(patterns)</h3>
+<p>Reads attachments matching <code>patterns</code> and returns an
+<a href="http://wiki.apache.org/couchdb/HTTP_Document_API#Inline_Attachments">Inline Attachments Object</a>
+as JSON.</p>
+<h4>Example</h4>
+<pre><code>attachments ["favicon.ico", "index.html"]
+</code></pre>
+<p>will produce</p>
+<pre><code>{
+  "favicon.ico": {
+    "content_type": "image/x-icon",
+    "data": "&lt;base 64 encoded content of favicon.ico&gt;"
+  },
+  "index.html": {
+    "content_type": "text/html; charset=utf-8",
+    "data": "&lt;base 64 encoded content of index.html&gt;"
+  }
+}
+</code></pre>
+<p><a id=convert></a></p>
+<h3>convert(patterns, format = 'png', options = nil)</h3>
+<p>Convert images using the <a href="http://www.imagemagick.org/">ImageMagick</a>
+<code>convert</code> program. The default is to convert the image to <code>png</code>.
+Specify <code>format</code> to any format string ImageMagick understands.
+You may want to specify other <code>options</code> as string, which
+are passed directly to ImageMagick.</p>
+<p>For a list of image format types supported by ImageMagick, use</p>
+<pre><code>`convert -list format`
+</code></pre>
+<p>on the command line and visit the
+<a href="http://www.imagemagick.org/">ImageMagick documentation</a>.</p>
+<h4>Example</h4>
+<pre><code>convert 'icon.svg', 'ico', '-resize 16x16 -transparent white'
+</code></pre>
+<p>will generate an <code>.ico</code> image and scale it to 16x16 px.</p>
+<p><a id=license></a></p>
+<h2>The MIT License (MIT)</h2>
+<p>Copyright © 2011 Johannes J. Schmidt, <a href="ttp://die-tf.de">TF</a></p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</p>    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-32813380-1']);
+      _gaq.push(['_trackPageview']);
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/jo">jo</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
   </body>
 </html>
