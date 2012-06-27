@@ -1,7 +1,7 @@
 Mouch — Couchapp Purism
 =======================
 
-With [Mouch](https://github.com/jo/mouch) and
+With [Mouch](http://jo.github.com/mouch) and
 [CouchDB](http://couchdb.apache.org/) you can build powerful
 [Couchapps](http://couchapp.org/) using plain HTML, CSS and JavaScript.
 Mouch will [assemble](#build) the project files and [deploy](#push) the
