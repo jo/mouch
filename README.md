@@ -145,6 +145,7 @@ The ERB context provides you with a few methods for handling file content:
 * [`base64`](#base64) - Encode content
 * [`read`](#read) - Read files and render .erb templates
 * [`map`](#map) - Map directories to JSON objects
+* [`attachment`](#attachment) - Generate \_attachment object
 * [`attachments`](#attachments) - Generate \_attachments entries
 * [`convert`](#convert) - Convert images using ImageMagick
 
@@ -235,6 +236,27 @@ into the JSON object
         "map": "content of map.js"
         "reduce": "content of reduce.js"
       }
+    }
+
+
+<a id=attachment></a>
+
+### attachment(filename, patterns = filename)
+
+Reads attachments matching `patterns` and returns an
+[Inline Attachments Object](http://wiki.apache.org/couchdb/HTTP_Document_API#Inline_Attachments)
+as JSON.
+(`filename` is used for `content_type` lookup)
+
+#### Example
+
+    attachment "app.js" ["lib/*.js", "app/*.js", "init.js"]
+
+will produce
+
+    {
+      "content_type": "application/javascript; charset=utf-8",
+      "data": "<base 64 encoded content of all js files from lib, app and init.js concatinated>"
     }
 
 

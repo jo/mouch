@@ -223,6 +223,7 @@ attention to conflicts.</p>
 <li><a href="#base64"><code>base64</code></a> - Encode content</li>
 <li><a href="#read"><code>read</code></a> - Read files and render .erb templates</li>
 <li><a href="#map"><code>map</code></a> - Map directories to JSON objects</li>
+<li><a href="#attachment"><code>attachment</code></a> - Generate _attachment object</li>
 <li><a href="#attachments"><code>attachments</code></a> - Generate _attachments entries</li>
 <li><a href="#convert"><code>convert</code></a> - Convert images using ImageMagick</li>
 </ul>
@@ -283,6 +284,21 @@ Strips extnames from filenames for the key.</p>
     "map": "content of map.js"
     "reduce": "content of reduce.js"
   }
+}
+</code></pre>
+<p><a id=attachment></a></p>
+<h3>attachment(filename, patterns = filename)</h3>
+<p>Reads attachments matching <code>patterns</code> and returns an
+<a href="http://wiki.apache.org/couchdb/HTTP_Document_API#Inline_Attachments">Inline Attachments Object</a>
+as JSON.
+(<code>filename</code> is used for <code>content_type</code> lookup)</p>
+<h4>Example</h4>
+<pre><code>attachment "app.js" ["lib/*.js", "app/*.js", "init.js"]
+</code></pre>
+<p>will produce</p>
+<pre><code>{
+  "content_type": "application/javascript; charset=utf-8",
+  "data": "&lt;base 64 encoded content of all js files from lib, app and init.js concatinated&gt;"
 }
 </code></pre>
 <p><a id=attachments></a></p>
