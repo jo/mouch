@@ -105,6 +105,16 @@ module Mouch
       to_json ? out.to_json : out
     end
 
+    # build inline attachment object
+    # with base64 encoded data
+    def attachment filename, patterns = filename, to_json = true
+      out = {
+        "content_type" => MIME_TYPES[File.extname(filename).downcase] || "application/octet-stream",
+        "data" => base64(read(patterns))
+      }
+
+      to_json ? out.to_json : out
+    end
 
     # map directory structure
     # to attachments data
@@ -113,15 +123,12 @@ module Mouch
 
       Dir[*patterns].each do |file|
         # templates gets evaluated at build time
-        key = File.basename(file).sub(/\.erb$/, '')
+        key = file.sub(/\.erb$/, '')
 
         if File.directory?(file)
           out.merge! attachments(Dir[File.join(file, '/*')], false)
         else
-          out[key] = {
-            "content_type" => MIME_TYPES[File.extname(key).downcase] || "application/octet-stream",
-            "data" => base64(read(file))
-          }
+          out[key] = attachment(file, file, false)
         end
       end
 
