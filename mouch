@@ -45,7 +45,6 @@ module Mouch
       ".mp4"  => "video/mp4",
       ".pdf"  => "application/pdf",
       ".png"  => "image/png",
-      ".png"  => "image/png",
       ".svg"  => "image/svg+xml; charset=utf-8",
       ".tiff" => "image/tiff"
     }
@@ -161,6 +160,7 @@ module Mouch
     def get_revs &block
       docs = {}
       @docs.each do |doc| 
+        doc.delete '_rev'
         docs[doc['_id']] = doc
       end
 
