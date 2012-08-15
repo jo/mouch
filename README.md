@@ -132,6 +132,13 @@ attention to conflicts.
     #=> 1 doc pushed
 
 
+### Auto Push
+
+You can use `inotify` to listen for filesystem changes and push on every save:
+
+    inotifywait -m -r --exclude "\.swp$" -e modify . | xargs -n 1 -I {} echo "./mouch app.json.erb http://localhost:5984/heimat" | bash
+
+
 
 <a id=docs></a>
 
