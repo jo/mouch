@@ -131,6 +131,12 @@ attention to conflicts.
     #=> * push http://localhost:5984/myapp
     #=> 1 doc pushed
 
+### `COUCH_URL`
+
+If the environment variable `COUCH_URL` exists, it will be used for pushing:
+
+
+    COUCH_URL=http://localhost:5984/myapp ./mouch app.json.erb
 
 ### Auto Push
 

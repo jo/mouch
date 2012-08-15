@@ -317,10 +317,13 @@ include Mouch::Build
 if ARGV.delete('--test')
   # run tests
   @@run_tests = true
-elsif urls = ARGV.any? { |arg| arg =~ /^https{0,1}:\/\// }
+elsif ARGV.any? { |arg| arg =~ /^https{0,1}:\/\// } || ENV['COUCH_URL']
   # push app
   urls = ARGV.find_all { |arg| arg =~ /^https{0,1}:\/\// }
   ARGV.delete_if { |arg| arg =~ /^https{0,1}:\/\// }
+
+  # use environment variable if present
+  urls << ENV['COUCH_URL'] if ENV['COUCH_URL']
 
   app = []
 
