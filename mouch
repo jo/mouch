@@ -337,6 +337,11 @@ elsif ARGV.any? { |arg| arg =~ /^https{0,1}:\/\// } || ENV['COUCH_URL']
   # parse app
   @app = JSON.parse app.join
 
+  # single doc
+  if @app['_id']
+    @app = { 'docs' => [@app] }
+  end
+
   # check app
   if !@app['docs'] || !@app['docs'].is_a?(Array)
     puts 'Invalid app: no docs array.'
